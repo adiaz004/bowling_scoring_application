@@ -67,6 +67,9 @@
             <height>18</height>
            </size>
           </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item row="0" column="1">
@@ -80,6 +83,9 @@
           <property name="styleSheet">
            <string notr="true">border: 2px solid black</string>
           </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item row="1" column="1">
@@ -89,6 +95,9 @@
             <width>59</width>
             <height>18</height>
            </size>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
