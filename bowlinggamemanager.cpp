@@ -1,7 +1,11 @@
 #include "bowlinggamemanager.h"
 #include "common.h"
-#include <QDebug>
 
+/**
+ * @brief BowlingGameManager::BowlingGameManager
+ * constructor for the bowling game manager. Sets up all
+ * necessary data and sets up a new game.
+ */
 BowlingGameManager::BowlingGameManager()
 {
     this->newGame();
@@ -9,6 +13,9 @@ BowlingGameManager::BowlingGameManager()
     setupFrames(NUM_FRAMES);
 }
 
+/**
+ * @brief BowlingGameManager::~BowlingGameManager
+ */
 BowlingGameManager::~BowlingGameManager()
 {
     delete this;
@@ -16,7 +23,8 @@ BowlingGameManager::~BowlingGameManager()
     /* TODO: delete stack */
 }
 
-/*
+/**
+ * @brief BowlingGameManager::newGame
  * Reset all valuts and start a new game.
  */
 void BowlingGameManager::newGame()
@@ -37,19 +45,19 @@ void BowlingGameManager::newGame()
     emit currentFrameSignal(QString::number(this->currentFrame + 1));
 }
 
-/*
+/**
+ * @brief BowlingGameManager::recordScore
  * This function takes in a raw char representing the score for current
- * frame and round, process the score and add it to the stack.
+ * frame and round, process the score and add it to the stack
+ * @param scoreAsChar score that must be recorded
  */
-void BowlingGameManager::recordScore(QChar scoreAsChar)
+int BowlingGameManager::recordScore(QChar scoreAsChar)
 {
     if (!scoreMap.contains(scoreAsChar)) {
-        qDebug() << "invalid scored passed in.";
-        return;
+        return SUCCESS;
     }
     if (!gameInProgress) {
-        qDebug() << "Game Over...";
-        return;
+        return SUCCESS;
     }
 
     /* Get current frame and record score. */
@@ -63,16 +71,20 @@ void BowlingGameManager::recordScore(QChar scoreAsChar)
     }
 
     Frame* frame = frames.at(this->currentFrame);
-    frame->recordRound(score);
-
+    int result = frame->recordRound(score);
+    if (result == FAILURE) {
+        return result;
+    }
     if (frame->isFrameComplete()) {
         bumpFrame();
     }
 
     updateGameScore();
+    return SUCCESS;
 }
 
-/*
+/**
+ * @brief BowlingGameManager::bumpFrame
  * Bump Frame to the next frame if needed.
  */
 void BowlingGameManager::bumpFrame() {
@@ -84,6 +96,10 @@ void BowlingGameManager::bumpFrame() {
     }
 }
 
+/**
+ * @brief BowlingGameManager::updateGameScore
+ * calculates the score for the current game.
+ */
 void BowlingGameManager::updateGameScore()
 {
     int totalScore = 0;
@@ -103,11 +119,11 @@ void BowlingGameManager::updateGameScore()
         }
 
     }
-    qDebug() << "Final Score: " << totalScore;
 }
 
-/*
- * Setup the scoreMap with all valid mappings.
+/**
+ * @brief BowlingGameManager::setupValidScoreValues
+ * setup the scoreMap with all valid mappings.
  */
 void BowlingGameManager::setupValidScoreValues()
 {
@@ -124,24 +140,30 @@ void BowlingGameManager::setupValidScoreValues()
     scoreMap.insert('X', 10);
 }
 
-/*
+/**
+ * @brief BowlingGameManager::getScoreMap
  * Returns current scoreMap.
+ * @return the map representing all valid score options for
+ * this game.
  */
 QMap<QChar, int> BowlingGameManager::getScoreMap()
 {
     return scoreMap;
 }
 
-/*
- * Allows others outside this class to start a new game.
+/**
+ * @brief BowlingGameManager::startNewGame
+ * allows others outside this class to start a new game.
  */
 void BowlingGameManager::startNewGame()
 {
     this->newGame();
 }
 
-/*
- * Setup all 10 frames at the beginning of a new game.
+/**
+ * @brief BowlingGameManager::setupFrames
+ * setup all 10 frames at the beginning of a new game.
+ * @param numFrames number of frames to setup.
  */
 void BowlingGameManager::setupFrames(int numFrames)
 {

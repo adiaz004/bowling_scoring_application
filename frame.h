@@ -11,14 +11,13 @@ class Frame : public QObject
 public:
     Frame(int frameNumber);
     ~Frame();
-    void recordRound(int score);
-    bool isFrameComplete();
+    int recordRound(int score);
     void resetFrame();
     void addBonus(int bonusScore);
     int getRemainingBonus();
     int getFrameScore();
     int getRoundScore(int round);
-    void setFrameScore(int score);
+    bool isFrameComplete();
     bool frameStarted();
 
 signals:
@@ -36,8 +35,8 @@ private:
     bool isSpare;
     bool frameHasStarted;
     bool frameComplete;
-    void recordFirstNineRounds(int score);
-    void recordTenthRound(int score);
+    int recordFirstNineRounds(int score);
+    int recordTenthRound(int score);
 };
 
 #endif // FRAME_H

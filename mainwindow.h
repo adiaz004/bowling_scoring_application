@@ -22,6 +22,7 @@ public slots:
     void startNewGame();
     void handleFrameUpdates(int frame, int round, int score);
     void handleFrameScoreUpdate(int frame, int score);
+    void exitGame();
 private:
     Ui::MainWindow *ui;
     QVector<FrameForm*> frameWidgetVector;

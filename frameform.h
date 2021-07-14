@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "bowlinggamemanager.h"
+
 namespace Ui {
 class FrameForm;
 }

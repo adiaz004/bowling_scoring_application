@@ -1,0 +1,26 @@
+ABOUT
+
+The app allows you to track your score during a bowling game.
+It supports a normal 10 Frame game with added bonuses if you score
+a spare or stike.
+
+Strike: A strike earns 10 points plus the sum of your next two shots.
+Spare: A spare earns 10 points plus the sum of your next one shot.
+Open Frame: An open frame only earns the number of pins knocked down.
+10th Frame: if you roll a stike in the first shot of the 10th frame, you get
+    two more shots.
+
+
+DEVELOPMENT
+
+This app is written in QT follows a view-controller model. This means that the
+bowling game should be easily ported to some other UI framework as the game logic
+all lives in the bowlinggamemanger.cpp file.
+
+BUILDING
+I've included a binary that was built for 64-bit windows 10 in the BUILD directory,
+however if you'd like to build it for your platform then you'll need to download and install QT
+and setup a build profile for your platform.
+
+RUN
+BUILD\standalone_release\BowlingScoringApplication.exe

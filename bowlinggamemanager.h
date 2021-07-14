@@ -13,7 +13,7 @@ public:
     BowlingGameManager();
     ~BowlingGameManager();
     void newGame();
-    void recordScore(QChar score);
+    int recordScore(QChar score);
     QMap<QChar, int> getScoreMap();
 
 signals:

@@ -10,4 +10,6 @@
 #define MAYBE_NOT_USED 0x1000
 #define SPARE 0x1001
 #define INVALID_ROUND -1
+#define SUCCESS 1
+#define FAILURE 0
 #endif // COMMON_H

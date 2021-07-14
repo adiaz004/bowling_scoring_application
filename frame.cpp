@@ -1,46 +1,64 @@
 #include "frame.h"
 #include "common.h"
-#include <QDebug>
 
+/**
+ * @brief Frame::Frame
+ * creates a new frame
+ * @param frameNumber represents the frame number for this instance.
+ */
 Frame::Frame(int frameNumber)
 {
     frame = frameNumber;
     resetFrame();
 }
 
+/**
+ * @brief Frame::~Frame
+ */
 Frame::~Frame()
 {
     delete this;
 }
 
+/**
+ * @brief Frame::frameStarted
+ * trackes whether or not the frame has started.
+ * @return
+ */
 bool Frame::frameStarted()
 {
     return frameHasStarted;
 }
 
-void Frame::recordRound(int score)
+/**
+ * @brief Frame::recordRound
+ * record a score for the next round.
+ * @param score score to record.
+ */
+int Frame::recordRound(int score)
 {
     if (!frameHasStarted) {
        frameHasStarted = true;
     }
     if (frameComplete) {
-        qDebug() << "Frame " << frame << " complete. ignoring score";
-        return;
+        return SUCCESS;
     }
 
     if (frame < 9) {
-        recordFirstNineRounds(score);
+        return recordFirstNineRounds(score);
     } else {
-        recordTenthRound(score);
+        return recordTenthRound(score);
     }
 }
 
-/*
- * This function handels the score logic for each the individual frame.
+/**
+ * @brief Frame::recordFirstNineRounds
+ * handles the score logic for each of the first 9 frames.
+ * @param score to record
  */
-void Frame::recordFirstNineRounds(int score)
+int Frame::recordFirstNineRounds(int score)
 {
-    qDebug() << frame << " recording " << score << " for round " << currentRound;
+    int result = SUCCESS;
     if (currentRound == 1 && score == 10) {
         /* stike */
         isStrike = true;
@@ -56,14 +74,14 @@ void Frame::recordFirstNineRounds(int score)
         frameScore += score;
         frameComplete = true;
         bonus = SPARE_BONUS;
+    } else if (currentRound == 2 && (score + roundOne) > 10) {
+        result = FAILURE;
     } else {
         frameScore += score;
         if (currentRound == 1) {
-            qDebug () << "RECORDING " << score <<  " round " << currentRound;
             roundOne = score;
         } else if (currentRound == 2) {
             roundTwo = score;
-            qDebug () << "RECORDING " << score <<  " round " << currentRound;
             frameComplete = true;
 
         } else {
@@ -72,15 +90,22 @@ void Frame::recordFirstNineRounds(int score)
     }
 
     /* new score means new roll, increase round */
-    currentRound++;
-
-    qDebug() << "frame: " << frame << " frameScore: " << frameScore;
+    if (result == SUCCESS)
+        currentRound++;
+    return result;
 }
 
-void Frame::recordTenthRound(int score)
+/**
+ * @brief Frame::recordTenthRound
+ * records the score for the tenth frame as it operates a bit different then
+ * the first nine frame.
+ * @param score score to record
+ */
+int Frame::recordTenthRound(int score)
 {
-    qDebug() << "Recording last round!!!!!!!";
+    int result = SUCCESS;
     if (currentRound == 1) {
+        /* rolling a 10 on the first round means a strike */
         if (score == 10) {
             isStrike = true;
         }
@@ -88,10 +113,15 @@ void Frame::recordTenthRound(int score)
         roundOne = score;
         frameScore += score;
     } else if (currentRound == 2) {
+        if (!isStrike && (score + roundOne) > 10) {
+            result = FAILURE;
+        }
+        /* if we're not a stike and rolled a spare, keep frame open. */
         if (!isStrike && (frameScore + score) == 10) {
             isSpare = true;
             roundTwo = SPARE;
         } else {
+            /* else we didn't roll a spare, so close out frame */
             if (score != 10) {
                 frameComplete = true;
             }
@@ -100,29 +130,28 @@ void Frame::recordTenthRound(int score)
 
         frameScore += score;
         currentRound++;
-
     } else if (currentRound == 3) {
+        /* rolling a spare or stike in the first round gets us a third round */
         frameScore += score;
         roundThree = score;
         frameComplete = true;
     }
+    return result;
 }
 
-/*
- * Returns whether or not this Frame is complete.
+/**
+ * @brief Frame::isFrameComplete
+ * returns whether or not this Frame is complete.
+ * @return true if frame is complete, otherwise false.
  */
 bool Frame::isFrameComplete()
 {
-
-    /*
-     * Frame is complete if we striked, got a spare, or rolled 2
-     * balls.
-     */
     return frameComplete;
 }
 
-/*
- * Resets frame values to default
+/**
+ * @brief Frame::resetFrame
+ * resets frame values to default
  */
 void Frame::resetFrame()
 {
@@ -139,8 +168,10 @@ void Frame::resetFrame()
     roundThree = MAYBE_NOT_USED;
 }
 
-/*
- * Adds the bonus score to this frame.
+/**
+ * @brief Frame::addBonus
+ * adds the bonus score to this frame.
+ * @param bonusScore
  */
 void Frame::addBonus(int bonusScore)
 {
@@ -150,27 +181,32 @@ void Frame::addBonus(int bonusScore)
     }
 }
 
-/*
- * Returns the number of remaining bonuses earned for this
- * frame.
+/**
+ * @brief Frame::getRemainingBonus
+ * @return the number of remaining bonuses.
  */
 int Frame::getRemainingBonus()
 {
     return bonus;
 }
 
-/*
- * Returns the frame score.
+/**
+ * @brief Frame::getFrameScore
+ * returns the current frame score.
+ * @return
  */
 int Frame::getFrameScore() {
     if (frameComplete && bonus == 0){
         return frameScore;
     }
-    return -1;
+    return INVALID_ROUND;
 }
 
-/*
- * Returns the individual round score.
+/**
+ * @brief Frame::getRoundScore
+ * returns the score for the requested round.
+ * @param round requested round
+ * @return
  */
 int Frame::getRoundScore(int round)
 {
@@ -190,12 +226,4 @@ int Frame::getRoundScore(int round)
         break;
     }
     return score;
-}
-
-/*
- * This allows outside entities to set the frame score,
- * in the case of bonuses earned from a stike or spare.
- */
-void Frame::setFrameScore(int score) {
-    frameScore = score;
 }

@@ -7,6 +7,12 @@
 #include <QTextEdit>
 #include <Qt>
 
+/**
+ * @brief FrameForm::FrameForm
+ * creates a new frame form object, supports the frame from widget.
+ * @param parent
+ * @param frameNumber
+ */
 FrameForm::FrameForm(QWidget *parent, int frameNumber) :
     QWidget(parent),
     ui(new Ui::FrameForm)
@@ -34,21 +40,29 @@ FrameForm::FrameForm(QWidget *parent, int frameNumber) :
     }
 }
 
+/**
+ * @brief FrameForm::~FrameForm
+ */
 FrameForm::~FrameForm()
 {
     delete ui;
 }
 
+/**
+ * @brief FrameForm::updateRoundScore
+ * updates UI with frame info.
+ * @param frame
+ * @param round
+ * @param score
+ */
 void FrameForm::updateRoundScore(int frame, int round, int score)
 {
-    qDebug() << "UI updating frame " << frame << " score: " << score;
     QString value = "";
     if (score == MAYBE_NOT_USED){
         value = "";
     } else if (score == 0) {
         value = "--";
-    } else if (round == 1 and score == 10 ||
-               (frame == 10)) {
+    } else if ((round == 1 && score == 10) ||(frame == 10)) {
         value = "X";
     } else if (score == SPARE) {
         value = "/";
@@ -75,11 +89,20 @@ void FrameForm::updateRoundScore(int frame, int round, int score)
     }
 }
 
+/**
+ * @brief FrameForm::updateFinalRoundScore
+ * updates the frame score
+ * @param score
+ */
 void FrameForm::updateFinalRoundScore(int score)
 {
     ui->frameTotalScore->setText(QString("%1").arg(score));
 }
 
+/**
+ * @brief FrameForm::resetFrame
+ * resets frame back to default vaules.
+ */
 void FrameForm::resetFrame()
 {
     ui->frameFirstRoundScore->setText("");
