@@ -18,15 +18,16 @@ public:
     ~MainWindow();
 
 public slots:
-    void HandleFrameInput();
-
+    void scoreButtonClicked();
+    void startNewGame();
+    void handleFrameUpdates(int frame, int round, int score);
+    void handleFrameScoreUpdate(int frame, int score);
 private:
     Ui::MainWindow *ui;
-    FrameForm* frame;
-    QVector<QWidget*> frameWidgetVector;
+    QVector<FrameForm*> frameWidgetVector;
     BowlingGameManager* bowlingGM;
 
-    void SetupActions();
+    void setupActions();
 
 };
 #endif // MAINWINDOW_H

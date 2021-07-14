@@ -14,11 +14,13 @@ public:
     explicit FrameForm(QWidget *parent = nullptr, int frameNumber = 0);
     ~FrameForm();
     int frameNumber;
-private:
+    void updateRoundScore(int frame, int round, int score);
+    void updateFinalRoundScore(int value);
+    void resetFrame();
+protected:
     Ui::FrameForm *ui;
+
 public slots:
-    void updateRoundScore(int frame, int round, int value);
-    void updateFinalRoundScore(int frame, int value);
 };
 
 #endif // FRAMEFORM_H

@@ -10,6 +10,7 @@ CONFIG += c++11
 
 SOURCES += \
     bowlinggamemanager.cpp \
+    frame.cpp \
     frameform.cpp \
     main.cpp \
     mainwindow.cpp
@@ -17,6 +18,7 @@ SOURCES += \
 HEADERS += \
     bowlinggamemanager.h \
     common.h \
+    frame.h \
     frameform.h \
     mainwindow.h
 

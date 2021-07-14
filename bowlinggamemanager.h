@@ -3,6 +3,8 @@
 #include <QStack>
 #include <QMap>
 #include <QObject>
+#include <QChar>
+#include "frame.h"
 
 class BowlingGameManager: public QObject
 {
@@ -10,11 +12,14 @@ class BowlingGameManager: public QObject
 public:
     BowlingGameManager();
     ~BowlingGameManager();
-    void NewGame();
-    void RecordScore(int frame, int score);
+    void newGame();
+    void recordScore(QChar score);
     QMap<QChar, int> getScoreMap();
+
 signals:
     void currentFrameSignal(QString);
+    void frameInfoSignal(int frame, int round, int score);
+    void frameScoreSignal (int frame, int score);
 private slots:
     void startNewGame();
 private:
@@ -22,10 +27,14 @@ private:
     int currentFrame;
     int currentFrameScore;
     int totalScore;
-    int currentRoll;
+    int currentRound;
     QStack<int> stack;
+    QVector<Frame*> frames;
     QMap<QChar, int> scoreMap;
     void setupValidScoreValues();
+    void setupFrames(int numFrames);
+    void bumpFrame();
+    void updateGameScore();
 };
 
 #endif // BOWLINGGAMEMANAGER_H
